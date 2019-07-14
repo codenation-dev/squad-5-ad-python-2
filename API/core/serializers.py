@@ -16,3 +16,11 @@ class ComissionsSerializer(serializers.ModelSerializer):
     #         raise serializers.ValidationError(
     #             "Número Pequeno")  # raise ValidationError
     #     return value
+
+
+class SellersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sellers
+        fields = ('id', 'name', 'address', 'phone', 'age',
+                  'email', 'cpf', 'comission')
