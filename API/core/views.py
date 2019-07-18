@@ -97,23 +97,32 @@ class ListMonthComissions(APIView):
         serializer = Month_ComissionsSerializer(month_comissions, many=True)
         return Response({"content": serializer.data})
 
-    def post(self, request):        
+    def post(self, request):
         id_seller = request.data['id_seller']
-        request.data['comission'] = calculate_comission(id_seller, request.data['amount'])
+        request.data['comission'] = calculate_comission(
+                                        id_seller,
+                                        request.data['amount']
+                                    )
         serializer = Month_ComissionsSerializer(data=request.data)
+
         if serializer.is_valid():
             content = serializer.save()
-            return Response({"id": content.id, "comission": content.comission}, status=status.HTTP_200_OK)
+            return Response(
+                        {"id": content.id, "comission": content.comission},
+                        status=status.HTTP_200_OK
+                    )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def calculate_comission(id_seller, amount):
-    seller = Sellers.objects.get(pk=id_seller)
-    id_comission = seller.get_id_comission()
-    plan_comission = Comissions.objects.get(pk=id_comission)
+    try:
+        seller = Sellers.objects.get(pk=id_seller)
+        id_comission = seller.get_id_comission()
+        plan_comission = Comissions.objects.get(pk=id_comission)
 
-    if(amount >= plan_comission.get_min_value()):
-        return amount * (plan_comission.get_upper_percentage() / 100)
-    else:
-        return amount * (plan_comission.get_lower_percentage() / 100)
-    
+        if(amount >= plan_comission.get_min_value()):
+            return amount * (plan_comission.get_upper_percentage() / 100)
+        else:
+            return amount * (plan_comission.get_lower_percentage() / 100)
+    except Exception as error:
+        return error
