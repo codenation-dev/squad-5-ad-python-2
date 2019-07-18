@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Comissions, Sellers
-from .serializers import ComissionsSerializer, SellersSerializer
+from .models import Comissions, Sellers, Month_Comissions
+from .serializers import ComissionsSerializer, SellersSerializer, Month_ComissionsSerializer
 from rest_framework import status
 from django.http import Http404
 
@@ -88,3 +88,32 @@ class ListSellersDetail(APIView):
         seller = self.get_object(pk)
         seller.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ListMonthComissions(APIView):
+
+    def get(self, request, format=None):
+        month_comissions = Month_Comissions.objects.all()
+        serializer = Month_ComissionsSerializer(month_comissions, many=True)
+        return Response({"content": serializer.data})
+
+    def post(self, request):        
+        id_seller = request.data['id_seller']
+        request.data['comission'] = calculate_comission(id_seller, request.data['amount'])
+        serializer = Month_ComissionsSerializer(data=request.data)
+        if serializer.is_valid():
+            content = serializer.save()
+            return Response({"id": content.id, "comission": content.comission}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def calculate_comission(id_seller, amount):
+    seller = Sellers.objects.get(pk=id_seller)
+    id_comission = seller.get_id_comission()
+    plan_comission = Comissions.objects.get(pk=id_comission)
+
+    if(amount >= plan_comission.get_min_value()):
+        return amount * (plan_comission.get_upper_percentage() / 100)
+    else:
+        return amount * (plan_comission.get_lower_percentage() / 100)
+    

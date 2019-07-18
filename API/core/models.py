@@ -16,6 +16,15 @@ class Comissions(models.Model):
     def __str__(self):
         return str(self.pk)
 
+    def get_lower_percentage(self):
+        return self.lower_percentage
+    
+    def get_upper_percentage(self):
+        return self.upper_percentage
+
+    def get_min_value(self):
+        return self.min_value
+
 
 class Sellers(models.Model):
 
@@ -35,3 +44,21 @@ class Sellers(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_id_comission(self):
+        return self.comission.pk
+
+
+class Month_Comissions(models.Model):
+
+    id_seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    month = models.IntegerField()
+    comission = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = "Comissão Mensal Vendedor"
+        verbose_name_plural = "Comissões Mensal Vendedor"
+
+    def __str__(self):
+        return str(self.pk)
