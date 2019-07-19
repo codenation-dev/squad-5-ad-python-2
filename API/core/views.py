@@ -91,6 +91,18 @@ class ListSellersDetail(APIView):
 
 
 class ListMonthComissions(APIView):
+    def calculate_comission(id_seller, amount):
+        try:
+            seller = Sellers.objects.get(pk=id_seller)
+            id_comission = seller.get_id_comission()
+            plan_comission = Comissions.objects.get(pk=id_comission)
+
+            if(amount >= plan_comission.get_min_value()):
+                return amount * (plan_comission.get_upper_percentage() / 100)
+            else:
+                return amount * (plan_comission.get_lower_percentage() / 100)
+        except Exception as error:
+            return error
 
     def get(self, request, format=None):
         month_comissions = Month_Comissions.objects.all()
@@ -99,7 +111,7 @@ class ListMonthComissions(APIView):
 
     def post(self, request):
         id_seller = request.data['id_seller']
-        request.data['comission'] = calculate_comission(
+        request.data['comission'] = self.calculate_comission(
                                         id_seller,
                                         request.data['amount']
                                     )
@@ -114,15 +126,55 @@ class ListMonthComissions(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def calculate_comission(id_seller, amount):
-    try:
-        seller = Sellers.objects.get(pk=id_seller)
-        id_comission = seller.get_id_comission()
-        plan_comission = Comissions.objects.get(pk=id_comission)
+class ListMonthComissionsDetail(APIView):
 
-        if(amount >= plan_comission.get_min_value()):
-            return amount * (plan_comission.get_upper_percentage() / 100)
-        else:
-            return amount * (plan_comission.get_lower_percentage() / 100)
-    except Exception as error:
-        return error
+    def get_object(self, pk):
+        try:
+            return Month_Comissions.objects.get(pk=pk)
+        except Month_Comissions.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        month_comissions = self.get_object(pk)
+        serializer = Month_ComissionsSerializer(month_comissions)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        month_comissions = self.get_object(pk)
+        serializer = Month_ComissionsSerializer(month_comissions, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        month_comissions = self.get_object(pk)
+        month_comissions.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# class OrdenateListComission(APIView):
+
+#     def get(self, request, format=None):
+#         month_comissions = Month_Comissions.objects.all()
+#         serializer = Month_ComissionsSerializer(month_comissions, many=True)
+#         return Response({"content": serializer.data})
+
+#     def post(self, request):
+#         id_seller = request.data['id_seller']
+#         request.data['comission'] = ordenate_comission(
+#                                         id_seller,
+#                                         request.data['month']
+#                                     )
+#         serializer = Month_ComissionsSerializer(data=request.data)
+
+#         if serializer.is_valid():
+#             content = serializer.save()
+#             return Response(
+#                         {"id": content.id, "comission": content.comission},
+#                         status=status.HTTP_200_OK
+#                     )
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
