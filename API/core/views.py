@@ -5,6 +5,8 @@ from .serializers import ComissionsSerializer, SellersSerializer, Month_Comissio
 from rest_framework import status
 from django.http import Http404
 
+import json
+
 
 class ListComissions(APIView):
 
@@ -91,7 +93,7 @@ class ListSellersDetail(APIView):
 
 
 class ListMonthComissions(APIView):
-    def calculate_comission(id_seller, amount):
+    def calculate_comission(self, id_seller, amount):
         try:
             seller = Sellers.objects.get(pk=id_seller)
             id_comission = seller.get_id_comission()
@@ -153,28 +155,16 @@ class ListMonthComissionsDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# class OrdenateListComission(APIView):
-
-#     def get(self, request, format=None):
-#         month_comissions = Month_Comissions.objects.all()
-#         serializer = Month_ComissionsSerializer(month_comissions, many=True)
-#         return Response({"content": serializer.data})
-
-#     def post(self, request):
-#         id_seller = request.data['id_seller']
-#         request.data['comission'] = ordenate_comission(
-#                                         id_seller,
-#                                         request.data['month']
-#                                     )
-#         serializer = Month_ComissionsSerializer(data=request.data)
-
-#         if serializer.is_valid():
-#             content = serializer.save()
-#             return Response(
-#                         {"id": content.id, "comission": content.comission},
-#                         status=status.HTTP_200_OK
-#                     )
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+class ListSellersMonth(APIView):
+    def get(self, request, month):
+        print(month)
+        sellers = (Month_Comissions
+                        .objects
+                        .filter(month=month)
+                        .order_by('-comission'))
+        sellers = [{'name': s.id_seller.name,
+                     'id': s.id_seller.id,
+                    'comission': s.comission} for s in sellers]
+        return Response(sellers, status=status.HTTP_200_OK)
 
 
