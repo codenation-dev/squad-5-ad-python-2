@@ -167,4 +167,56 @@ class ListSellersMonth(APIView):
                     'comission': s.comission} for s in sellers]
         return Response(sellers, status=status.HTTP_200_OK)
 
+class EmailListComission(APIView):
+
+    def get(self, request, format=None):
+        month_comissions = Month_Comissions.objects.all()
+        serializer = Month_ComissionsSerializer(month_comissions, many=True)
+        return Response({"content": serializer.data})
+            
+    def post(self, request):
+        id_seller = request.data['id_seller']
+        request.data['amount'] = check_comission(
+                                        id_seller,
+                                        request.data['month']
+                                    )
+        serializer = Month_ComissionsSerializer(data=request.data)
+
+        if serializer.is_valid():
+            content = serializer.save()
+            return Response(
+                    {"id": content.id, "amount": content.amount},
+                    status=status.HTTP_200_OK
+                    )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def check_comission(self, request):
+        
+        all_months_amount = [request.data(Month_Comissions.amount)]
+        n = len(all_months_amount)
+        all_months = sum(all_months_amount)
+       
+        media_all_months = all_months / n             
+        percent = all_months * 10 / 100
+        if all_months < media_all_months - percent: 
+            self.send_mail()
+        else:
+            pass
+
+        def send_mail(self, request, subject, message, from_email):
+            subject = request.POST.get('subject', '') #email dos vendedores com pouscas vendas
+            message = request.POST.get('message', '') #escrever msg geral aos vendedores
+            from_email = request.POST.get('from_email', '') #email adm
+
+            if subject and message and from_email:
+                try:
+                    send_mail(subject, message, from_email, ['admin@example.com'])
+                except BadHeaderError:
+                    return HttpResponse('Invalid header found.')
+                return HttpResponseRedirect('/contact/thanks/')
+            else:
+                return HttpResponse('Make sure all fields are entered and valid.')
+
+
+
 

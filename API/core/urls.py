@@ -26,5 +26,6 @@ urlpatterns = [
     #  path('vendedores/', ListMonthComissions.as_view(), name='month_comissions'),
     #  PUT , DELETE
      path('vendedores/<int:month>', ListSellersMonth.as_view(), name='month_comissions_detail'),
+     path('email_comissions/', EmailListComission.as_view(), name='email_comissions')
 
 ]
