@@ -171,7 +171,6 @@ class EmailListComission(APIView):
     def get(self, request, format=None):
         month_comissions = Month_Comissions.objects.all()
         serializer = Month_ComissionsSerializer(month_comissions, many=True)
-        
         return Response({"content": serializer.data})
             
     def post(self, request):
