@@ -5,7 +5,8 @@ from .views import (ListComissions,
                     ListSellersDetail, 
                     ListMonthComissions,
                     ListMonthComissionsDetail,
-                    ListSellersMonth)
+                    ListSellersMonth,
+                    EmailListComission)
 
 urlpatterns = [
     #  GET all, POST
@@ -19,13 +20,13 @@ urlpatterns = [
      path('sellers/<int:pk>', ListSellersDetail.as_view(),
          name='list_sellers_detail'),
     #  GET all, POST
-     path('month_comissions/', ListMonthComissions.as_view(), name='month_comissions'),
+     path('month_sales/', ListMonthComissions.as_view(), name='month_comissions'),
     #  PUT , DELETE
-     path('month_comissions/<int:pk>', ListMonthComissionsDetail.as_view(), name='month_comissions_detail'),
+     path('month_sales/<int:pk>', ListMonthComissionsDetail.as_view(), name='month_comissions_detail'),
     #  GET all, POST
     #  path('vendedores/', ListMonthComissions.as_view(), name='month_comissions'),
     #  PUT , DELETE
      path('vendedores/<int:month>', ListSellersMonth.as_view(), name='month_comissions_detail'),
-     path('email_comissions/', EmailListComission.as_view(), name='email_comissions')
+     path('check_comission/', EmailListComission.as_view(), name='email_comissions')
 
 ]
