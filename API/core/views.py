@@ -1,12 +1,11 @@
+from django.http import Http404
+from django.core.mail import send_mail
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 from .models import Comissions, Sellers, Month_Comissions
 from .serializers import ComissionsSerializer, SellersSerializer, Month_ComissionsSerializer
-from rest_framework import status
-from django.http import Http404
-
-import json
-
+import numpy as np
 
 class ListComissions(APIView):
 
@@ -175,48 +174,30 @@ class EmailListComission(APIView):
         return Response({"content": serializer.data})
             
     def post(self, request):
-        id_seller = request.data['id_seller']
-        request.data['amount'] = check_comission(
-                                        id_seller,
-                                        request.data['month']
-                                    )
-        serializer = Month_ComissionsSerializer(data=request.data)
+        seller = Sellers.objects.get(pk=request.data['id_seller'])
+        sales = Month_Comissions.objects.filter(id_seller=seller.id)
+        amount = [s.amount for s in sales]
+        if len(amount)>=5:
+            amount = np.array(sorted(amount[-5:]))
+            weights = np.array([0,0,1,2,3])
+            meta = (amount.dot(weights)/weights.sum())*.9
+            if (request.data['amount']<= meta):
+                subject = 'Notificação'
+                msg = 'Vendedor não atingiu a meta'
+                _from = "a@empresa.com"
+                _to = [seller.email]
 
-        if serializer.is_valid():
-            content = serializer.save()
-            return Response(
-                    {"id": content.id, "amount": content.amount},
-                    status=status.HTTP_200_OK
-                    )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                send_mail(subject, msg, _from, _to,
+                          fail_silently=False)
 
-    def check_comission(self, request):
-        
-        all_months_amount = [request.data(Month_Comissions.amount)]
-        n = len(all_months_amount)
-        all_months = sum(all_months_amount)
-       
-        media_all_months = all_months / n             
-        percent = all_months * 10 / 100
-        if all_months < media_all_months - percent: 
-            self.send_mail()
+                res = {"should_notify": True}
+                return Response(res,status=status.HTTP_200_OK)
+
+            res = {"seller": seller.id, 
+                   "amount": request.data['amount'],
+                   "meta": meta}
+            return Response(res,status=status.HTTP_200_OK)
         else:
-            pass
-
-        def send_mail(self, request, subject, message, from_email):
-            subject = request.POST.get('subject', '') #email dos vendedores com pouscas vendas
-            message = request.POST.get('message', '') #escrever msg geral aos vendedores
-            from_email = request.POST.get('from_email', '') #email adm
-
-            if subject and message and from_email:
-                try:
-                    send_mail(subject, message, from_email, ['admin@example.com'])
-                except BadHeaderError:
-                    return HttpResponse('Invalid header found.')
-                return HttpResponseRedirect('/contact/thanks/')
-            else:
-                return HttpResponse('Make sure all fields are entered and valid.')
-
-
-
+            res = {"content": "Vendedor tem menos de 5 meses de vendas"}
+            return Response(res, status=status.HTTP_200_OK)
 
