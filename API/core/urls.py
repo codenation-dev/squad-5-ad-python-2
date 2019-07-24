@@ -23,10 +23,9 @@ urlpatterns = [
      path('month_sales/', ListMonthComissions.as_view(), name='month_comissions'),
     #  PUT , DELETE
      path('month_sales/<int:pk>', ListMonthComissionsDetail.as_view(), name='month_comissions_detail'),
-    #  GET all, POST
-    #  path('vendedores/', ListMonthComissions.as_view(), name='month_comissions'),
     #  PUT , DELETE
      path('vendedores/<int:month>', ListSellersMonth.as_view(), name='month_comissions_detail'),
+    #  POST
      path('check_comission/', EmailListComission.as_view(), name='email_comissions')
 
 ]
