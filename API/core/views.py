@@ -5,8 +5,6 @@ from .serializers import ComissionsSerializer, SellersSerializer, Month_Comissio
 from rest_framework import status
 from django.http import Http404
 
-import json
-
 
 class ListComissions(APIView):
 
@@ -114,17 +112,17 @@ class ListMonthComissions(APIView):
     def post(self, request):
         id_seller = request.data['id_seller']
         request.data['comission'] = self.calculate_comission(
-                                        id_seller,
-                                        request.data['amount']
-                                    )
+            id_seller,
+            request.data['amount']
+        )
         serializer = Month_ComissionsSerializer(data=request.data)
 
         if serializer.is_valid():
             content = serializer.save()
             return Response(
-                        {"id": content.id, "comission": content.comission},
-                        status=status.HTTP_200_OK
-                    )
+                {"id": content.id, "comission": content.comission},
+                status=status.HTTP_200_OK
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -141,13 +139,14 @@ class ListMonthComissionsDetail(APIView):
         serializer = Month_ComissionsSerializer(month_comissions)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
-        month_comissions = self.get_object(pk)
-        serializer = Month_ComissionsSerializer(month_comissions, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def put(self, request, pk, format=None):
+    #     month_comissions = self.get_object(pk)
+    #     serializer = Month_ComissionsSerializer(
+    #         month_comissions, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         month_comissions = self.get_object(pk)
@@ -159,12 +158,10 @@ class ListSellersMonth(APIView):
     def get(self, request, month):
         print(month)
         sellers = (Month_Comissions
-                        .objects
-                        .filter(month=month)
-                        .order_by('-comission'))
+                   .objects
+                   .filter(month=month)
+                   .order_by('-comission'))
         sellers = [{'name': s.id_seller.name,
-                     'id': s.id_seller.id,
+                    'id': s.id_seller.id,
                     'comission': s.comission} for s in sellers]
         return Response(sellers, status=status.HTTP_200_OK)
-
-
