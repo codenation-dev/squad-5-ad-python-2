@@ -7,12 +7,13 @@ from django.http import Http404
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Comissions, Sellers, Month_Comissions
-from .serializers import ComissionsSerializer, SellersSerializer, Month_ComissionsSerializer
-
+from .serializers import (ComissionsSerializer,
+                          SellersSerializer,
+                          Month_ComissionsSerializer)
 import numpy as np
 
 
-class ListComissions(APIView):
+class ViewComissions(APIView):
 
     def get(self, request, format=None):
         comissions = Comissions.objects.all()
@@ -27,7 +28,7 @@ class ListComissions(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ListComissionDetail(APIView):
+class ViewComissionDetail(APIView):
 
     def get_object(self, pk):
         try:
@@ -54,7 +55,7 @@ class ListComissionDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ListSellers(APIView):
+class ViewSellers(APIView):
 
     def get(self, request, format=None):
         sellers = Sellers.objects.all()
@@ -69,7 +70,7 @@ class ListSellers(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ListSellersDetail(APIView):
+class ViewSellersDetail(APIView):
 
     def get_object(self, pk):
         try:
@@ -96,7 +97,7 @@ class ListSellersDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ListMonthComissions(APIView):
+class ViewMonthComissions(APIView):
     def calculate_comission(self, id_seller, amount):
         try:
             seller = Sellers.objects.get(pk=id_seller)
@@ -132,7 +133,7 @@ class ListMonthComissions(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ListMonthComissionsDetail(APIView):
+class ViewMonthComissionsDetail(APIView):
 
     def get_object(self, pk):
         try:
@@ -147,7 +148,8 @@ class ListMonthComissionsDetail(APIView):
 
     def put(self, request, pk, format=None):
         month_comissions = self.get_object(pk)
-        serializer = Month_ComissionsSerializer(month_comissions, data=request.data)
+        serializer = Month_ComissionsSerializer(month_comissions,
+                                                data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -159,21 +161,20 @@ class ListMonthComissionsDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ListSellersMonth(APIView):
+class ViewSellersMonth(APIView):
     def get(self, request, month):
-        print(month)
         sellers = (Month_Comissions
-                        .objects
-                        .filter(month=month)
-                        .order_by('-comission'))
+                   .objects
+                   .filter(month=month)
+                   .order_by('-comission'))
         sellers = [{'name': s.id_seller.name,
-                     'id': s.id_seller.id,
+                    'id': s.id_seller.id,
                     'comission': s.comission} for s in sellers]
         return Response(sellers, status=status.HTTP_200_OK)
 
 
-class EmailListComission(APIView):
-    
+class ViewEmailComission(APIView):
+
     def calculate_comission(self, id_seller, amount):
         try:
             seller = Sellers.objects.get(pk=id_seller)
@@ -200,28 +201,34 @@ class EmailListComission(APIView):
     def send_mail(self, subject, message, from_email, to_email):
         if subject and message and from_email and to_email:
             try:
-                send_mail(subject, message, from_email, to_email, fail_silently=False)
+                send_mail(subject, message,
+                          from_email, to_email,
+                          fail_silently=False)
             except:
                 return "email nao enviado"
             return "email enviado"
         else:
             return "Make sure all fields are entered and valid."
-            
+
     def post(self, request):
         seller = Sellers.objects.get(pk=request.data['seller'])
         amount = request.data['amount']
         comission = self.calculate_comission(seller.pk, amount)
 
-        sells = Month_Comissions.objects.filter(id_seller=seller.pk).order_by('month')
+        sells = (Month_Comissions
+                 .objects
+                 .filter(id_seller=seller.pk)
+                 .order_by('month'))
         sells = sorted([i['comission'] for i in sells.values()][-5:])
 
         should_notify = self.check_comission(sells, comission)
-        
-        if(should_notify):
+
+        if should_notify:
             subject = 'notificação televendas'
             message = 'comissão está abaixo da média'
             from_email = settings.EMAIL_HOST_USER
             to_email = [seller.email]
             result = self.send_mail(subject, message, from_email, to_email)
 
-        return Response({ "should_notify": should_notify }, status=status.HTTP_200_OK)
+        return Response({"should_notify": should_notify},
+                        status=status.HTTP_200_OK)

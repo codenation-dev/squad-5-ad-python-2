@@ -18,7 +18,7 @@ class Comissions(models.Model):
 
     def get_lower_percentage(self):
         return self.lower_percentage
-    
+
     def get_upper_percentage(self):
         return self.upper_percentage
 
@@ -52,7 +52,7 @@ class Sellers(models.Model):
 class Month_Comissions(models.Model):
 
     id_seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
-    amount = models.FloatField() #  models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.FloatField()
     month = models.IntegerField()
     comission = models.FloatField()
 
