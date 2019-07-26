@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from . import local_settings
+# from . import local_settings
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'core',
+    'rest_framework_swagger'
 ]
 
 MIDDLEWARE = [
@@ -89,16 +90,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth\
+            .password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth\
+            .password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth\
+            .password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth\
+            .password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -122,9 +127,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-EMAIL_HOST = local_settings.EMAIL_HOST
-EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
-EMAIL_PORT = local_settings.EMAIL_PORT
-EMAIL_USE_TLS = local_settings.EMAIL_USE_TLS
-EMAIL_USE_SSL = local_settings.EMAIL_USE_SSL
+# EMAIL_HOST = local_settings.EMAIL_HOST
+# EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
+# EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
+# EMAIL_PORT = local_settings.EMAIL_PORT
+# EMAIL_USE_TLS = local_settings.EMAIL_USE_TLS
+# EMAIL_USE_SSL = local_settings.EMAIL_USE_SSL
