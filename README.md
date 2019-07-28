@@ -24,22 +24,147 @@ pip install -r requirements.txt
 ```
 {
 	"lower_percentage": 5,
-	"min_value": 10000
+	"min_value": 10000,
 	"upper_percentage": 10,
 }
 ```
-#### Retorna as Comissões:
+#### Retornar Comissões:
 
 `GET /comissions`: Retorna todas as comissões cadastradas.
 
-#### Retorna Comissão:
+#### Retornar Comissão:
 
 `GET /comissions/id`: Retorna uma comissão cadastrada.
 
 #### Alterar Comissão:
 
-`PUT /comissions/id`: Altera uma comissão cadastrada.
+`PUT /comissions/id` (todos os são campos são necessários): Altera uma comissão cadastrada.
 
-#### Retorna Comissão:
+#### Body example:
+
+```
+{
+	"lower_percentage": 5,
+	"min_value": 20000,
+	"upper_percentage": 10,
+}
+```
+
+#### Remover Comissão:
 
 `DELETE /comissions/id`: Remove uma comissão cadastrada.
+
+
+## Vendedores
+
+#### Cadastrar Vendedor:
+
+`POST /sellers`: Realiza o cadastro da comissão.
+
+#### Body example:
+
+```
+{
+	"name": "João Fernandes",
+	"address": "Loteamento Santo Antônio, Rua B, 56, Centro",
+	"phone": 123456789,
+	"age": 20,
+	"cpf": 11223344556,
+	"phone": 123456789,
+	"comission": 1
+}
+```
+#### Retornar Vendedores:
+
+`GET /sellers`: Retorna todas os vendedores cadastrados.
+
+#### Retornar Vendedor:
+
+`GET /sellers/id`: Retorna um vendedor cadastrado.
+
+#### Alterar Vendedor:
+
+`PUT /sellers/id` (todos os são campos são necessários): Altera um vendedor cadastrado.
+
+#### Body example:
+
+```
+{
+	"name": "João Fernandes",
+	"address": "Loteamento Santo Antônio, Rua B, 56, Centro",
+	"phone": 123456789,
+	"age": 20,
+	"cpf": 11223344556,
+	"phone": 123456789,
+	"comission": 2
+}
+```
+
+#### Remover Vendedor:
+
+`DELETE /sellers/id`: Remove uma comissão cadastrada.
+
+
+## Registro de Venda Mensal
+
+#### Registrar Venda:
+
+`POST /month_sales`: Realiza o cadastro de uma venda.
+
+#### Body example:
+
+```
+{
+	"id_seller": 1,
+	"amount": 5324,
+	"month": 1
+}
+```
+ 
+#### Retornar Vendas:
+
+`GET /month_sales`: Retorna todas as vendas cadastradas.
+
+#### Retornar Venda:
+
+`GET /month_sales/id`: Retorna uma venda cadastrada.
+
+#### Alterar Venda:
+
+`PUT /month_sales/id` (todos os são campos são necessários): Altera uma venda cadastrada.
+
+#### Body example:
+
+```
+{
+	"id_seller": 1,
+	"amount": 6511,
+	"month": 1
+}
+```
+
+#### Remover Venda:
+
+`DELETE /month_sales/id`: Remove uma venda cadastrada.
+
+
+## Registro de Venda do Mês Referente 
+
+#### Retornar Venda:
+
+`GET /vendedores/month`: Retorna as vendas referente ao mês.
+
+## Registro de Venda do Mês Referente 
+
+#### Retornar Venda:
+
+`POST /check_comission`: Envia notificação aos vendedores que estão com a média de comissão baixa nos últimos meses.
+
+#### Body example:
+
+```
+{
+	"seller": 1,
+	"amount": 6511,
+}
+```
