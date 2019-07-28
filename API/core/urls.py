@@ -7,14 +7,12 @@ from .views import (ViewComissions,
                     ViewMonthComissions,
                     ViewMonthComissionsDetail,
                     ViewSellersMonth,
-                    ViewEmailComission)
-from rest_framework_swagger.views import get_swagger_view
-
-schema_view = get_swagger_view(title='API Gestão de comissões Televendas')
+                    ViewEmailComission,
+                    index)
 
 
 urlpatterns = [
-    url("", schema_view),
+    path("", index),
     #  GET all, POST
     path('comissions/',
          ViewComissions.as_view(),

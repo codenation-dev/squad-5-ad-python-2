@@ -1,5 +1,6 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.core.mail import send_mail
+from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -10,17 +11,47 @@ from .models import Comissions, Sellers, Month_Comissions
 from .serializers import (ComissionsSerializer,
                           SellersSerializer,
                           Month_ComissionsSerializer)
+
+
 import numpy as np
+
+
+def index(request):
+
+    data = {
+        "title": "API Gestão de comissões Televendas",
+        "resources": [
+            {"path": "comissions/", "methods": ["get", "post"]},
+            {"path": "comissions/<id>", "methods": ["get", "put", "delete"]},
+            {"path": "sellers/", "methods": ["get", "post"]},
+            {"path": "sellers/<id>", "methods": ["get", "put", "delete"]},
+            {"path": "month_sales/", "methods": ["get", "post"]},
+            {"path": "month_sales/<id>", "methods": ["get", "put", "delete"]},
+            {"path": "vendedores/<month>", "methods": "get"},
+            {"path": "check_comission/", "methods": "post"}
+        ]
+    }
+
+    return JsonResponse(data)
 
 
 class ViewComissions(APIView):
 
     def get(self, request, format=None):
+        """
+            Retorna todos os planos de comissão existentes
+        """
         comissions = Comissions.objects.all()
         serializer = ComissionsSerializer(comissions, many=True)
         return Response({"content": serializer.data})
 
     def post(self, request):
+        """
+        post:
+            Cria um novo plano de comissão
+
+        """
+
         serializer = ComissionsSerializer(data=request.data)
         if serializer.is_valid():
             content = serializer.save()
@@ -29,6 +60,17 @@ class ViewComissions(APIView):
 
 
 class ViewComissionDetail(APIView):
+    """
+    get:
+        Retorna todos os planos de comissão existentes
+
+    put:
+        Atualiza um plano de comissão existente
+
+    delete:
+        Deleta um plano de comissão existente
+
+    """
 
     def get_object(self, pk):
         try:
@@ -56,7 +98,14 @@ class ViewComissionDetail(APIView):
 
 
 class ViewSellers(APIView):
+    """
+    get:
+        Retorna todos os vendedores existentes
 
+    post:
+        Cadastra um novo vendedor
+
+    """
     def get(self, request, format=None):
         sellers = Sellers.objects.all()
         serializer = SellersSerializer(sellers, many=True)
@@ -71,7 +120,16 @@ class ViewSellers(APIView):
 
 
 class ViewSellersDetail(APIView):
+    """
+    get:
+        Retorna dados de um vendedor
 
+    put:
+        Atualiza dados do vendedor
+
+    delete:
+        Deleta um vendedor
+    """
     def get_object(self, pk):
         try:
             return Sellers.objects.get(pk=pk)
@@ -98,6 +156,14 @@ class ViewSellersDetail(APIView):
 
 
 class ViewMonthComissions(APIView):
+    """
+    get:
+        Retorna todas a vendas realizadas
+
+    post:
+        Cadastra uma venda
+
+    """
     def calculate_comission(self, id_seller, amount):
         try:
             seller = Sellers.objects.get(pk=id_seller)
@@ -134,7 +200,17 @@ class ViewMonthComissions(APIView):
 
 
 class ViewMonthComissionsDetail(APIView):
+    """
+    get:
+        Retorna todas as vendas realizadas
 
+    put:
+        Atualiza um plano de comissão existente
+
+    delete:
+        Deleta um plano de comissão existente
+
+    """
     def get_object(self, pk):
         try:
             return Month_Comissions.objects.get(pk=pk)
@@ -162,6 +238,10 @@ class ViewMonthComissionsDetail(APIView):
 
 
 class ViewSellersMonth(APIView):
+    """
+    get:
+        Retorna as vendas realizadas no mês indicado
+    """
     def get(self, request, month):
         sellers = (Month_Comissions
                    .objects
@@ -174,6 +254,10 @@ class ViewSellersMonth(APIView):
 
 
 class ViewEmailComission(APIView):
+    """
+    post:
+        Verifica a média ponderada mensal do vendedor e o notifica
+    """
 
     def calculate_comission(self, id_seller, amount):
         try:
