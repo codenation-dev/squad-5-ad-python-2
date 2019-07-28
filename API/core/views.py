@@ -81,20 +81,20 @@ class ViewComissionDetail(APIView):
     def get(self, request, pk, format=None):
         comission = self.get_object(pk)
         serializer = ComissionsSerializer(comission)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
         comission = self.get_object(pk)
         serializer = ComissionsSerializer(comission, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         comission = self.get_object(pk)
         comission.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"id": pk}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ViewSellers(APIView):
@@ -139,20 +139,20 @@ class ViewSellersDetail(APIView):
     def get(self, request, pk, format=None):
         seller = self.get_object(pk)
         serializer = SellersSerializer(seller)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
         seller = self.get_object(pk)
         serializer = SellersSerializer(seller, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         seller = self.get_object(pk)
         seller.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"id": pk}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ViewMonthComissions(APIView):
@@ -194,7 +194,7 @@ class ViewMonthComissions(APIView):
             content = serializer.save()
             return Response(
                         {"id": content.id, "comission": content.comission},
-                        status=status.HTTP_200_OK
+                        status=status.HTTP_201_CREATED
                     )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -220,7 +220,7 @@ class ViewMonthComissionsDetail(APIView):
     def get(self, request, pk, format=None):
         month_comissions = self.get_object(pk)
         serializer = Month_ComissionsSerializer(month_comissions)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
         month_comissions = self.get_object(pk)
@@ -228,13 +228,13 @@ class ViewMonthComissionsDetail(APIView):
                                                 data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         month_comissions = self.get_object(pk)
         month_comissions.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"id": pk}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ViewSellersMonth(APIView):
@@ -250,7 +250,7 @@ class ViewSellersMonth(APIView):
         sellers = [{'name': s.id_seller.name,
                     'id': s.id_seller.id,
                     'comission': s.comission} for s in sellers]
-        return Response(sellers, status=status.HTTP_200_OK)
+        return Response({"content": sellers}, status=status.HTTP_200_OK)
 
 
 class ViewEmailComission(APIView):
@@ -274,10 +274,10 @@ class ViewEmailComission(APIView):
 
     def check_comission(self, list_comissions, comission):
         list_comissions = np.array(list_comissions)
-        pesos = np.arange(1, list_comissions.shape[0]+1)
-        media = list_comissions.dot(pesos)/pesos.sum()
-
-        if(comission < media - (media * 0.1)):
+        weights = np.arange(1, list_comissions.shape[0]+1)
+        mean = list_comissions.dot(weights)/weights.sum()
+        print(comission)
+        if comission > (mean * 0.9):
             return True
         else:
             return False
