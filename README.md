@@ -59,7 +59,7 @@ pip install -r requirements.txt
 
 #### Cadastrar Vendedor:
 
-`POST /sellers`: Realiza o cadastro da comissão.
+`POST /sellers`: Realiza o cadastro do vendedor.
 
 #### Body example:
 
