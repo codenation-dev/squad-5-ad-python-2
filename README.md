@@ -62,6 +62,12 @@ pip install -r requirements.txt
 
 `DELETE /comissions/id`: Remove um plano de comissão cadastrado.
 
+#### Resposta: 
+
+```
+	204 No content
+	{“id”: 100}
+```
 
 ## Vendedores
 
@@ -119,6 +125,12 @@ pip install -r requirements.txt
 
 `DELETE /sellers/id`: Remove uma comissão cadastrada.
 
+#### Resposta: 
+
+```
+	204 No content
+	{“id”: 100}
+```
 
 ## Registro de Venda Mensal
 
@@ -169,6 +181,13 @@ pip install -r requirements.txt
 #### Remover Venda:
 
 `DELETE /month_sales/id`: Remove uma venda cadastrada.
+
+#### Resposta: 
+
+```
+	204 No content
+	{“id”: 100}
+```
 
 
 ## Registro de Venda do Mês Referente 
