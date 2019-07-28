@@ -152,7 +152,7 @@ pip install -r requirements.txt
 #### Resposta:
 
 ```
-	200 OK
+	201 Created
 	{“id”: 100, “comission”: 300.89}
 ```
  
