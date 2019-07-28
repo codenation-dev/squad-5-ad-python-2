@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 #### Cadastrar Comissão:
 
-`POST /comissions`: Realiza o cadastro da comissão.
+`POST /comissions`: Realiza o cadastro do plano comissão.
 
 #### Body example:
 
@@ -30,15 +30,15 @@ pip install -r requirements.txt
 ```
 #### Retornar Comissões:
 
-`GET /comissions`: Retorna todas as comissões cadastradas.
+`GET /comissions`: Retorna todas os planos de comissões cadastrados.
 
 #### Retornar Comissão:
 
-`GET /comissions/id`: Retorna uma comissão cadastrada.
+`GET /comissions/id`: Retorna um plano de comissão cadastrado.
 
 #### Alterar Comissão:
 
-`PUT /comissions/id` (todos os são campos são necessários): Altera uma comissão cadastrada.
+`PUT /comissions/id` (todos os são campos são necessários): Altera um plano de comissão cadastrado.
 
 #### Body example:
 
@@ -52,7 +52,7 @@ pip install -r requirements.txt
 
 #### Remover Comissão:
 
-`DELETE /comissions/id`: Remove uma comissão cadastrada.
+`DELETE /comissions/id`: Remove um plano de comissão cadastrado.
 
 
 ## Vendedores
