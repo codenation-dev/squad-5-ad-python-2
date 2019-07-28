@@ -28,6 +28,14 @@ pip install -r requirements.txt
 	"upper_percentage": 10,
 }
 ```
+
+#### Resposta: 
+
+```
+	201 Created
+	{“id”: 100}
+```
+
 #### Retornar Comissões:
 
 `GET /comissions`: Retorna todas os planos de comissões cadastrados.
@@ -73,6 +81,13 @@ pip install -r requirements.txt
 	"phone": 123456789,
 	"comission": 1
 }
+```
+
+#### Resposta: 
+
+```
+	201 Created
+	{“id”: 100}
 ```
 #### Retornar Vendedores:
 
@@ -122,7 +137,7 @@ pip install -r requirements.txt
 
 ```
 
-# Resposta:
+#### Resposta:
 
 ```
 	200 OK
@@ -162,13 +177,26 @@ pip install -r requirements.txt
 
 `GET /vendedores/month`: Retorna as vendas referente ao mês.
 
-## Registro de Venda do Mês Referente 
+#### Reposta:
+
+```
+	200 OK
+	[{“name”: “Vendedor1”, “id”: 1, “comission”: 1000.00}, {“name”: “Vendedor2”, “id”: 2, “comission”: 900.00},
+	 {“name”: “Vendedor3”, “id”: 3, “comission”: 910.00}]
+```
+
+## Verificação da Média de Comissão do Vendedor
 
 #### Retornar Venda:
 
 `POST /check_comission`: Envia notificação aos vendedores que estão com a média de comissão baixa nos últimos meses.
 
-# Retorno:
+#### Resposta:
+
+```
+	200 OK
+	{“should_notify”: true}
+```
 
 
 #### Body example:
