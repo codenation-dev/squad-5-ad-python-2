@@ -119,6 +119,14 @@ pip install -r requirements.txt
 	"amount": 5324,
 	"month": 1
 }
+
+```
+
+# Resposta:
+
+```
+	200 OK
+	{“id”: 100, “comission”: 300.89}
 ```
  
 #### Retornar Vendas:
@@ -159,6 +167,9 @@ pip install -r requirements.txt
 #### Retornar Venda:
 
 `POST /check_comission`: Envia notificação aos vendedores que estão com a média de comissão baixa nos últimos meses.
+
+# Retorno:
+
 
 #### Body example:
 
