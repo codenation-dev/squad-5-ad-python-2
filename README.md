@@ -191,14 +191,6 @@ pip install -r requirements.txt
 
 `POST /check_comission`: Envia notificação aos vendedores que estão com a média de comissão baixa nos últimos meses.
 
-#### Resposta:
-
-```
-	200 OK
-	{“should_notify”: true}
-```
-
-
 #### Body example:
 
 ```
@@ -207,3 +199,11 @@ pip install -r requirements.txt
 	"amount": 6511,
 }
 ```
+
+#### Resposta:
+
+```
+	200 OK
+	{“should_notify”: true}
+```
+
