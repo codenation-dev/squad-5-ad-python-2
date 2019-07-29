@@ -276,8 +276,8 @@ class ViewEmailComission(APIView):
         list_comissions = np.array(list_comissions)
         weights = np.arange(1, list_comissions.shape[0]+1)
         mean = list_comissions.dot(weights)/weights.sum()
-        print(comission)
-        if comission > (mean * 0.9):
+        
+        if comission < (mean * 0.9):
             return True
         else:
             return False
@@ -288,8 +288,8 @@ class ViewEmailComission(APIView):
                 send_mail(subject, message,
                           from_email, to_email,
                           fail_silently=False)
-            except:
-                return "email nao enviado"
+            except Exception as error:
+                return error
             return "email enviado"
         else:
             return "Make sure all fields are entered and valid."
@@ -313,6 +313,6 @@ class ViewEmailComission(APIView):
             from_email = settings.EMAIL_HOST_USER
             to_email = [seller.email]
             result = self.send_mail(subject, message, from_email, to_email)
-
+            print(result)
         return Response({"should_notify": should_notify},
                         status=status.HTTP_200_OK)

@@ -26,7 +26,7 @@ SECRET_KEY = 'bwvj2we!g@xs^*!ryog@gu^9cp&x7p%efi0%xx9%y=08^l(he_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", 'localhost', 'testserver']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -125,9 +125,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# EMAIL_HOST = local_settings.EMAIL_HOST
-# EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
-# EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
-# EMAIL_PORT = local_settings.EMAIL_PORT
-# EMAIL_USE_TLS = local_settings.EMAIL_USE_TLS
-# EMAIL_USE_SSL = local_settings.EMAIL_USE_SSL
+
+EMAIL_HOST = str(os.environ.get('EMAIL_HOST'))
+EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT'))
+EMAIL_USE_TLS = bool(int(os.environ.get('EMAIL_USE_TLS')))
+EMAIL_USE_SSL = bool(int(os.environ.get('EMAIL_USE_SSL')))
