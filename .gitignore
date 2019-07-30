@@ -1,6 +1,7 @@
 .venv
 .vscode
 API/db.sqlite3
-API/db_.sqlite3
-*.pyc
-__pycache__/
+**/*.pyc
+**/*/__pycache__/
+API/core/migrations/__pycache__/**
+API/local_setings.py
