@@ -276,7 +276,6 @@ class ViewEmailComission(APIView):
         list_comissions = np.array(list_comissions)
         weights = np.arange(1, list_comissions.shape[0]+1)
         mean = list_comissions.dot(weights)/weights.sum()
-        
         if comission < (mean * 0.9):
             return True
         else:
