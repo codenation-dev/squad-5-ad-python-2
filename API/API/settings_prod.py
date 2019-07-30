@@ -18,3 +18,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+EMAIL_HOST = str(os.environ.get('EMAIL_HOST'))
+EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT'))
+EMAIL_USE_TLS = bool(int(os.environ.get('EMAIL_USE_TLS')))
+EMAIL_USE_SSL = bool(int(os.environ.get('EMAIL_USE_SSL')))
